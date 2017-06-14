@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LocalExpenseControlV2</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="prompt_data">Data</string>
+    <string name="prompt_descricao">Descrição</string>
+    <string name="prompt_valor">Valor</string>
+    <string name="action_salvar">Salvar</string>
+</resources>
