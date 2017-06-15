@@ -1,11 +1,10 @@
 package com.lemelo.localexpensecontrolv2;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,26 +18,25 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /*
- * Created by leoci on 13/06/2017.
+ * Created by leoci on 14/06/2017.
  */
 
-public class CadastraEntradaFragment extends Fragment{
+public class EditaEntradaFragment extends Fragment{
+    private View view;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_cadastra_entrada, container, false);
-        getActivity().setTitle("Entrada de Valores");
-        ScrollView loginScrollView = (ScrollView) view.findViewById(R.id.scrollViewCadastraEntrada);
-        loginScrollView.setOnTouchListener(new View.OnTouchListener() {
+        view = inflater.inflate(R.layout.activity_edita_entrada, container, false);
+        getActivity().setTitle("Editando um item da entrada!");
+
+        ScrollView scrollViewEditaEntrada = (ScrollView) view.findViewById(R.id.scrollViewEditaEntrada);
+        scrollViewEditaEntrada.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService( INPUT_METHOD_SERVICE);
@@ -51,17 +49,15 @@ public class CadastraEntradaFragment extends Fragment{
             }
         });
 
-        final EditText txtEntradaData = (EditText) view.findViewById(R.id.txtData);
-        final EditText txtEntradaDescricao = (EditText) view.findViewById(R.id.txtDescricao);
-        final EditText txtEntradaValor = (EditText) view.findViewById(R.id.txtValor);
+        final EditText txtData = (EditText) view.findViewById(R.id.txtData);
+        txtData.setText(getArguments().getString("data"));
+        final EditText txtDescricao = (EditText) view.findViewById(R.id.txtDescricao);
+        txtDescricao.setText(getArguments().getString("descricao"));
+        final EditText txtValor = (EditText) view.findViewById(R.id.txtValor);
+        txtValor.setText(getArguments().getString("valor"));
 
-        final SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        txtEntradaData.setText(data.format(Calendar.getInstance().getTime()));
-
-        final Button btnControleSalvar = (Button) view.findViewById(R.id.btnSalvar);
-        btnControleSalvar.setOnClickListener(new View.OnClickListener() {
-            SQLiteDatabase db;
-
+        final Button btnSalvar = (Button) view.findViewById(R.id.btnSalvar);
+        btnSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Fecha Teclado
@@ -72,12 +68,14 @@ public class CadastraEntradaFragment extends Fragment{
                 v.requestFocus();
                 v.setFocusableInTouchMode(false);
 
+                SQLiteDatabase db = null;
+
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date d = sdf.parse(txtEntradaData.getText().toString());
+                    java.util.Date d = sdf.parse(txtData.getText().toString());
                     java.sql.Date dataSql = new java.sql.Date(d.getTime());
-                    String descricao = txtEntradaDescricao.getText().toString();
-                    String valorStr = txtEntradaValor.getText().toString();
+                    String descricao = txtDescricao.getText().toString();
+                    String valorStr = txtValor.getText().toString();
                     if(valorStr.equals("")){
                         valorStr = "0.0";
                     }
@@ -88,14 +86,20 @@ public class CadastraEntradaFragment extends Fragment{
                     EntradaDao entradaDao = new EntradaDao(db);
 
                     Entrada entrada = new Entrada();
+                    entrada.setId(Integer.parseInt(getArguments().getString("id")));
                     entrada.setData(dataSql);
                     entrada.setDescricao(descricao);
                     entrada.setValor(valor);
 
-                    entradaDao.insert(entrada);
+                    entradaDao.update(entrada);
 
-                    Toast.makeText(getContext(), "Registro Salvo!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Registro Editado!", Toast.LENGTH_LONG).show();
 
+                    EntradaFragment fragment = new EntradaFragment();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.fragment_content, fragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } finally {

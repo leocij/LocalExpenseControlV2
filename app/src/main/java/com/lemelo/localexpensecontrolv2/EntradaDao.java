@@ -46,7 +46,7 @@ public class EntradaDao {
     }
 
     public void update(Entrada entrada){
-        String sql = "update Entrada set data = ?, descricao = ?, valor = ? where id = ?";
+        String sql = "update entrada set data = ?, descricao = ?, valor = ? where id = ?";
         Object bindArgs[] = new Object[]{
                 entrada.getData(), entrada.getDescricao(), entrada.getValor(), entrada.getId()
         };
