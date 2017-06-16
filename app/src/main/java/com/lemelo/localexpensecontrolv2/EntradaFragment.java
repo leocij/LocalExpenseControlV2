@@ -66,9 +66,10 @@ public class EntradaFragment extends Fragment{
         db = fabrica.getWritableDatabase();
         EntradaDao entradaDao = new EntradaDao(db);
         List<Entrada> list = entradaDao.listAll();
-        ArrayAdapter<Entrada> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, list);
+        //ArrayAdapter<Entrada> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, list);
+        MeuAdapter meuAdapter = new MeuAdapter(list,getActivity());
         ListView lvImprimeEntradas = (ListView) view.findViewById(R.id.lvImprimeEntradas);
-        lvImprimeEntradas.setAdapter(arrayAdapter);
+        lvImprimeEntradas.setAdapter(meuAdapter);
 
         lvImprimeEntradas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

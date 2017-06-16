@@ -4,6 +4,9 @@ package com.lemelo.localexpensecontrolv2;
  * Created by leoci on 13/06/2017.
  */
 
+import android.graphics.Paint;
+import android.graphics.Typeface;
+
 import java.sql.Date;
 
 class Entrada {
@@ -53,8 +56,21 @@ class Entrada {
 
     @Override
     public String toString() {
-        return "Data: " + data +
-                "\nDescrição: " + descricao +
-                "\nValor: " + valor;
+        int aux;
+        int tam = descricao.length();
+        int espaco = 25;
+        StringBuilder espacos = new StringBuilder();
+        if(tam < espaco){
+            aux = espaco - tam;
+            int i;
+            for(i=0; i<aux; i++){
+                espacos.append("-");
+            }
+        }
+
+        String saida = "" + data + "\n" + descricao + espacos.toString() + valor;
+
+        return saida;
+        //return data + "\n" + descricao + espacos.toString() + valor;
     }
 }
