@@ -4,14 +4,13 @@ package com.lemelo.localexpensecontrolv2;
  * Created by leoci on 13/06/2017.
  */
 
-import java.math.BigDecimal;
 import java.sql.Date;
 
 class Entrada {
     private Integer id;
-    private Date data;
+    private String data;
     private String descricao;
-    private BigDecimal valor;
+    private String valor;
 
     public Entrada() {
         setId(id);
@@ -28,11 +27,11 @@ class Entrada {
         this.id = id;
     }
 
-    public Date getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(Date data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -44,11 +43,11 @@ class Entrada {
         this.descricao = descricao;
     }
 
-    public BigDecimal getValor() {
+    public String getValor() {
         return valor;
     }
 
-    public void setValor(BigDecimal valor) {
+    public void setValor(String valor) {
         this.valor = valor;
     }
 

@@ -10,19 +10,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /*
  * Created by leoci on 13/06/2017.
@@ -41,12 +39,10 @@ public class CadastraEntradaFragment extends Fragment{
         loginScrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService( INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                v.setFocusableInTouchMode(true);
-                v.requestFocus();
-                v.setFocusableInTouchMode(false);
+
+                //close keyboard
+                new MyKeyboard().hideKeyboard(getActivity(), v);
+                //Toast.makeText(getContext(), "Passei aqui - Dentro do Scroll!", Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -55,8 +51,17 @@ public class CadastraEntradaFragment extends Fragment{
         final EditText txtEntradaDescricao = (EditText) view.findViewById(R.id.txtDescricao);
         final EditText txtEntradaValor = (EditText) view.findViewById(R.id.txtValor);
 
-        final SimpleDateFormat data = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        txtEntradaData.setText(data.format(Calendar.getInstance().getTime()));
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        //final DateFormat data = DateFormat.getDateInstance();
+        txtEntradaData.setText(sdf1.format(Calendar.getInstance().getTime()));
+
+        txtEntradaDescricao.requestFocus();
+        //open keyboard
+        new MyKeyboard().showKeyboard(getActivity());
+
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        txtEntradaValor.setText(nf.format(0));
+        txtEntradaValor.addTextChangedListener(new MoneyTextWatcher(txtEntradaValor));
 
         final Button btnControleSalvar = (Button) view.findViewById(R.id.btnSalvar);
         btnControleSalvar.setOnClickListener(new View.OnClickListener() {
@@ -64,37 +69,44 @@ public class CadastraEntradaFragment extends Fragment{
 
             @Override
             public void onClick(View v) {
-                // Fecha Teclado
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService( INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                v.setFocusableInTouchMode(true);
-                v.requestFocus();
-                v.setFocusableInTouchMode(false);
-
                 try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date d = sdf.parse(txtEntradaData.getText().toString());
-                    java.sql.Date dataSql = new java.sql.Date(d.getTime());
+                    String dataStr = txtEntradaData.getText().toString();
                     String descricao = txtEntradaDescricao.getText().toString();
                     String valorStr = txtEntradaValor.getText().toString();
                     if(valorStr.equals("")){
-                        valorStr = "0.0";
+                        NumberFormat nf = NumberFormat.getCurrencyInstance();
+                        valorStr = nf.format(0);
                     }
-                    BigDecimal valor = new BigDecimal(valorStr);
+                    //BigDecimal valor = new BigDecimal(valorStr);
 
                     FabricaConexao fabrica = new FabricaConexao(getContext());
                     db = fabrica.getWritableDatabase();
                     EntradaDao entradaDao = new EntradaDao(db);
 
                     Entrada entrada = new Entrada();
-                    entrada.setData(dataSql);
+                    entrada.setData(dataStr);
                     entrada.setDescricao(descricao);
-                    entrada.setValor(valor);
+                    entrada.setValor(valorStr);
 
                     entradaDao.insert(entrada);
 
                     Toast.makeText(getContext(), "Registro Salvo!", Toast.LENGTH_LONG).show();
+
+                    //LIMPA O FORMULARIO
+                    SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    txtEntradaData.setText(sdf1.format(Calendar.getInstance().getTime()));
+
+                    //Toast.makeText(getContext(), "Passei aqui - Abre teclado!", Toast.LENGTH_LONG).show();
+                    //close keyboard
+                    new MyKeyboard().hideKeyboard(getActivity(), v);
+                    //open keyboard
+                    new MyKeyboard().showKeyboard(getActivity());
+                    txtEntradaDescricao.setText("");
+                    txtEntradaDescricao.requestFocus();
+
+                    NumberFormat nf = NumberFormat.getCurrencyInstance();
+                    txtEntradaValor.setText(nf.format(0));
+                    txtEntradaValor.addTextChangedListener(new MoneyTextWatcher(txtEntradaValor));
 
                 } catch (ParseException e) {
                     e.printStackTrace();

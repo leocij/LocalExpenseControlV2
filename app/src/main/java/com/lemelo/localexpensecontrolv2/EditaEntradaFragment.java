@@ -39,12 +39,8 @@ public class EditaEntradaFragment extends Fragment{
         scrollViewEditaEntrada.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService( INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                v.setFocusableInTouchMode(true);
-                v.requestFocus();
-                v.setFocusableInTouchMode(false);
+                //fecha teclado
+                new MyKeyboard().hideKeyboard(getActivity(), v);
                 return false;
             }
         });
@@ -55,31 +51,24 @@ public class EditaEntradaFragment extends Fragment{
         txtDescricao.setText(getArguments().getString("descricao"));
         final EditText txtValor = (EditText) view.findViewById(R.id.txtValor);
         txtValor.setText(getArguments().getString("valor"));
+        txtValor.addTextChangedListener(new MoneyTextWatcher(txtValor));
 
         final Button btnSalvar = (Button) view.findViewById(R.id.btnSalvar);
         btnSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Fecha Teclado
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService( INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                v.setFocusableInTouchMode(true);
-                v.requestFocus();
-                v.setFocusableInTouchMode(false);
-
+                new MyKeyboard().hideKeyboard(getActivity(), v);
                 SQLiteDatabase db = null;
 
                 try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    java.util.Date d = sdf.parse(txtData.getText().toString());
-                    java.sql.Date dataSql = new java.sql.Date(d.getTime());
+                    String dataStr = txtData.getText().toString();
                     String descricao = txtDescricao.getText().toString();
                     String valorStr = txtValor.getText().toString();
                     if(valorStr.equals("")){
                         valorStr = "0.0";
                     }
-                    BigDecimal valor = new BigDecimal(valorStr);
+                    //BigDecimal valor = new BigDecimal(valorStr);
 
                     FabricaConexao fabrica = new FabricaConexao(getContext());
                     db = fabrica.getWritableDatabase();
@@ -87,9 +76,9 @@ public class EditaEntradaFragment extends Fragment{
 
                     Entrada entrada = new Entrada();
                     entrada.setId(Integer.parseInt(getArguments().getString("id")));
-                    entrada.setData(dataSql);
+                    entrada.setData(dataStr);
                     entrada.setDescricao(descricao);
-                    entrada.setValor(valor);
+                    entrada.setValor(valorStr);
 
                     entradaDao.update(entrada);
 
@@ -98,7 +87,7 @@ public class EditaEntradaFragment extends Fragment{
                     EntradaFragment fragment = new EntradaFragment();
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.replace(R.id.fragment_content, fragment);
-                    ft.addToBackStack(null);
+                    //ft.addToBackStack(null);
                     ft.commit();
                 } catch (ParseException e) {
                     e.printStackTrace();

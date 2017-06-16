@@ -21,7 +21,7 @@ import android.widget.ListView;
 import java.text.ParseException;
 import java.util.List;
 
-/**
+/*
  * Created by leoci on 13/06/2017.
  */
 
@@ -34,6 +34,7 @@ public class EntradaFragment extends Fragment{
 
         view = inflater.inflate(R.layout.activity_entrada, container, false);
         getActivity().setTitle("Todas entradas de valores");
+
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.entradaFab);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,13 +58,15 @@ public class EntradaFragment extends Fragment{
     }
 
     private void imprime(View view) throws ParseException {
-        SQLiteDatabase db = null;
+        // Fecha Teclado
+
+        SQLiteDatabase db;
 
         FabricaConexao fabrica = new FabricaConexao(getContext());
         db = fabrica.getWritableDatabase();
         EntradaDao entradaDao = new EntradaDao(db);
         List<Entrada> list = entradaDao.listAll();
-        ArrayAdapter<Entrada> arrayAdapter = new ArrayAdapter<Entrada>(getActivity(), android.R.layout.simple_list_item_1, list);
+        ArrayAdapter<Entrada> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, list);
         ListView lvImprimeEntradas = (ListView) view.findViewById(R.id.lvImprimeEntradas);
         lvImprimeEntradas.setAdapter(arrayAdapter);
 
@@ -87,9 +90,9 @@ public class EntradaFragment extends Fragment{
             public void onClick(DialogInterface dialog, int which) {
                 Bundle bundle = new Bundle();
                 bundle.putString("id", selecionado.getId().toString());
-                bundle.putString("data", selecionado.getData().toString());
-                bundle.putString("descricao", selecionado.getDescricao().toString());
-                bundle.putString("valor", selecionado.getValor().toString());
+                bundle.putString("data", selecionado.getData());
+                bundle.putString("descricao", selecionado.getDescricao());
+                bundle.putString("valor", selecionado.getValor());
 
                 EditaEntradaFragment edita = new EditaEntradaFragment();
                 edita.setArguments(bundle);
@@ -112,7 +115,7 @@ public class EntradaFragment extends Fragment{
                 dialogDel.setNegativeButton("Sim", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogDel, int which) {
-                        SQLiteDatabase db = null;
+                        SQLiteDatabase db;
                         Integer id = selecionado.getId();
                         FabricaConexao fabrica = new FabricaConexao(getContext());
                         db = fabrica.getWritableDatabase();

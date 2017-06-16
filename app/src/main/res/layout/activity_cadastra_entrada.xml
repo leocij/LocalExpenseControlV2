@@ -32,6 +32,7 @@
                     android:id="@+id/txtDescricao"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
                     android:hint="@string/prompt_descricao" />
             </android.support.design.widget.TextInputLayout>
 
@@ -43,8 +44,8 @@
                     android:id="@+id/txtValor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:hint="@string/prompt_valor" />
+                    android:hint="@string/prompt_valor"
+                    android:inputType="numberDecimal" />
             </android.support.design.widget.TextInputLayout>
 
             <Button

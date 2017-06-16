@@ -8,11 +8,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class EntradaDao {
     private SQLiteDatabase db;
@@ -21,18 +24,14 @@ public class EntradaDao {
         this.db = db;
     }
 
-    public void insert(Entrada entrada){
+    public void insert(Entrada entrada) throws ParseException {
         String sql = "insert into entrada (data,descricao,valor) values (?,?,?)";
+        String dataStr = entrada.getData();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        java.util.Date d = sdf1.parse(dataStr);
+        java.sql.Date dataSql = new java.sql.Date(d.getTime());
         Object bindArgs[] = new Object[]{
-                entrada.getData(), entrada.getDescricao(), entrada.getValor()
-        };
-        db.execSQL(sql, bindArgs);
-    }
-
-    public void delete(Entrada entrada){
-        String sql = "delete from entrada where id = ?";
-        Object bindArgs[] = new Object[]{
-                entrada.getId()
+                dataSql, entrada.getDescricao(), new BigDecimal(Long.parseLong(String.valueOf(NumberFormat.getCurrencyInstance().parse(entrada.getValor()))))
         };
         db.execSQL(sql, bindArgs);
     }
@@ -45,10 +44,15 @@ public class EntradaDao {
         db.execSQL(sql, bindArgs);
     }
 
-    public void update(Entrada entrada){
+    public void update(Entrada entrada) throws ParseException {
+
         String sql = "update entrada set data = ?, descricao = ?, valor = ? where id = ?";
+        String dataStr = entrada.getData();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        java.util.Date d = sdf1.parse(dataStr);
+        java.sql.Date dataSql = new java.sql.Date(d.getTime());
         Object bindArgs[] = new Object[]{
-                entrada.getData(), entrada.getDescricao(), entrada.getValor(), entrada.getId()
+                dataSql, entrada.getDescricao(), new BigDecimal(Long.parseLong(String.valueOf(NumberFormat.getCurrencyInstance().parse(entrada.getValor())))) , entrada.getId()
         };
         db.execSQL(sql, bindArgs);
     }
@@ -60,12 +64,13 @@ public class EntradaDao {
             Entrada entrada = new Entrada();
             entrada.setId(cursor.getInt(0));
             String str = cursor.getString(1);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date d = dateFormat.parse(str);
-            java.sql.Date dataSql = new java.sql.Date(d.getTime());
-            entrada.setData(dataSql);
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date dateUtil = sdf1.parse(str);
+            SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            entrada.setData(sdf2.format(dateUtil));
             entrada.setDescricao(cursor.getString(2));
-            entrada.setValor(new BigDecimal(cursor.getDouble(3)));
+            NumberFormat nf = NumberFormat.getCurrencyInstance();
+            entrada.setValor(nf.format(cursor.getDouble(3)));
             entradas.add(entrada);
         }
 
@@ -74,25 +79,5 @@ public class EntradaDao {
         }
 
         return entradas;
-    }
-
-    public Entrada getById(Integer id) throws ParseException {
-        Entrada entrada = null;
-        Cursor cursor = db.query("Entrada", new String[]{"id","data","descricao","valor"},"id="+id,null,null,null,null);
-        if(cursor != null && cursor.moveToNext()){
-            entrada = new Entrada();
-            entrada.setId(cursor.getInt(0));
-            String str = cursor.getString(1);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date d = new Date();
-            d = dateFormat.parse(str);
-            entrada.setData((java.sql.Date) d);
-            entrada.setDescricao(cursor.getString(2));
-            entrada.setValor(new BigDecimal(cursor.getDouble(3)));
-        }
-        if (cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-        return entrada;
     }
 }
