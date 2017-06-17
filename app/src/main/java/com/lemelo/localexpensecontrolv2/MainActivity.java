@@ -16,6 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.lemelo.localexpensecontrolv2.config.MyKeyboard;
+import com.lemelo.localexpensecontrolv2.entrada.EntradaFragment;
+import com.lemelo.localexpensecontrolv2.saida.SaidaFragment;
+
 /*
  * Created by leoci on 13/06/2017.
  */
@@ -89,7 +93,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.replace(R.id.fragment_content, fr);
             ft.commit();
         } else if (id == R.id.nav_saida) {
-
+            SaidaFragment fr = new SaidaFragment();
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.fragment_content, fr);
+            ft.commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -1,4 +1,4 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.entrada;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -15,7 +15,11 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
+import com.lemelo.localexpensecontrolv2.R;
+import com.lemelo.localexpensecontrolv2.config.FabricaConexao;
+import com.lemelo.localexpensecontrolv2.config.MoneyTextWatcher;
+import com.lemelo.localexpensecontrolv2.config.MyKeyboard;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +30,7 @@ import java.util.Locale;
  * Created by leoci on 13/06/2017.
  */
 
-public class CadastraEntradaFragment extends Fragment{
+public class CadastraEntradaFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
@@ -73,7 +77,7 @@ public class CadastraEntradaFragment extends Fragment{
                     String dataStr = txtEntradaData.getText().toString();
                     String descricao = txtEntradaDescricao.getText().toString();
                     String valorStr = txtEntradaValor.getText().toString();
-                    if(valorStr.equals("")){
+                    if (valorStr.equals("")) {
                         NumberFormat nf = NumberFormat.getCurrencyInstance();
                         valorStr = nf.format(0);
                     }

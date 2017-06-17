@@ -1,4 +1,4 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.entrada;
 
 /*
  * Created by leoci on 13/06/2017.
@@ -7,8 +7,9 @@ package com.lemelo.localexpensecontrolv2;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.lemelo.localexpensecontrolv2.entrada.Entrada;
+
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.config;
 
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -10,14 +10,14 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
  * Created by leoci on 15/06/2017.
  */
 
-class MyKeyboard {
+public class MyKeyboard {
 
-    void hideKeyboard(FragmentActivity activity, View v) {
+    public void hideKeyboard(FragmentActivity activity, View v) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService( INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(),0);
     }
 
-    void showKeyboard(FragmentActivity activity) {
+    public void showKeyboard(FragmentActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService( INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,0);
     }

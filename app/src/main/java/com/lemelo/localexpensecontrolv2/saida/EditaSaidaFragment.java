@@ -1,4 +1,4 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.saida;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -9,34 +9,37 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.lemelo.localexpensecontrolv2.R;
+import com.lemelo.localexpensecontrolv2.config.FabricaConexao;
+import com.lemelo.localexpensecontrolv2.config.MoneyTextWatcher;
+import com.lemelo.localexpensecontrolv2.config.MyKeyboard;
+import com.lemelo.localexpensecontrolv2.saida.Saida;
+import com.lemelo.localexpensecontrolv2.saida.SaidaDao;
+import com.lemelo.localexpensecontrolv2.saida.SaidaFragment;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
+import java.text.ParseException;
 
 /*
  * Created by leoci on 14/06/2017.
  */
 
-public class EditaEntradaFragment extends Fragment{
+public class EditaSaidaFragment extends Fragment{
     private View view;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.activity_edita_entrada, container, false);
-        getActivity().setTitle("Editando um item da entrada!");
+        view = inflater.inflate(R.layout.activity_edita_saida, container, false);
+        getActivity().setTitle("Editando um item da saida!");
 
-        ScrollView scrollViewEditaEntrada = (ScrollView) view.findViewById(R.id.scrollViewEditaEntrada);
-        scrollViewEditaEntrada.setOnTouchListener(new View.OnTouchListener() {
+        ScrollView scrollViewEditaSaida = (ScrollView) view.findViewById(R.id.scrollViewEditaSaida);
+        scrollViewEditaSaida.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 //fecha teclado
@@ -72,19 +75,19 @@ public class EditaEntradaFragment extends Fragment{
 
                     FabricaConexao fabrica = new FabricaConexao(getContext());
                     db = fabrica.getWritableDatabase();
-                    EntradaDao entradaDao = new EntradaDao(db);
+                    SaidaDao saidaDao = new SaidaDao(db);
 
-                    Entrada entrada = new Entrada();
-                    entrada.setId(Integer.parseInt(getArguments().getString("id")));
-                    entrada.setData(dataStr);
-                    entrada.setDescricao(descricao);
-                    entrada.setValor(valorStr);
+                    Saida saida = new Saida();
+                    saida.setId(Integer.parseInt(getArguments().getString("id")));
+                    saida.setData(dataStr);
+                    saida.setDescricao(descricao);
+                    saida.setValor(valorStr);
 
-                    entradaDao.update(entrada);
+                    saidaDao.update(saida);
 
                     Toast.makeText(getContext(), "Registro Editado!", Toast.LENGTH_LONG).show();
 
-                    EntradaFragment fragment = new EntradaFragment();
+                    SaidaFragment fragment = new SaidaFragment();
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.replace(R.id.fragment_content, fragment);
                     //ft.addToBackStack(null);

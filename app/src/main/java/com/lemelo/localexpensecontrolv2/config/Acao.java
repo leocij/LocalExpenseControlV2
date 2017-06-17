@@ -1,4 +1,4 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.config;
 
 /*
  * Created by leoci on 14/06/2017.

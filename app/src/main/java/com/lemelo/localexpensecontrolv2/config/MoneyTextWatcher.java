@@ -1,4 +1,4 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.config;
 
 import android.text.Editable;
 import android.text.TextWatcher;

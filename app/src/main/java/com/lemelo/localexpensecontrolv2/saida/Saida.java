@@ -1,21 +1,16 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.saida;
 
 /*
  * Created by leoci on 13/06/2017.
  */
 
-import android.graphics.Paint;
-import android.graphics.Typeface;
-
-import java.sql.Date;
-
-class Entrada {
+class Saida {
     private Integer id;
     private String data;
     private String descricao;
     private String valor;
 
-    public Entrada() {
+    public Saida() {
         setId(id);
         setData(data);
         setDescricao(descricao);

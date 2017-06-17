@@ -1,4 +1,4 @@
-package com.lemelo.localexpensecontrolv2;
+package com.lemelo.localexpensecontrolv2.saida;
 
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.lemelo.localexpensecontrolv2.R;
+import com.lemelo.localexpensecontrolv2.config.FabricaConexao;
 
 import java.text.ParseException;
 import java.util.List;
@@ -25,22 +27,22 @@ import java.util.List;
  * Created by leoci on 13/06/2017.
  */
 
-public class EntradaFragment extends Fragment{
+public class SaidaFragment extends Fragment{
     private View view;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.activity_entrada, container, false);
-        getActivity().setTitle("Todas entradas de valores");
+        view = inflater.inflate(R.layout.activity_saida, container, false);
+        getActivity().setTitle("Todas saidas de valores");
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.entradaFab);
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.saidaFab);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CadastraEntradaFragment cadastra = new CadastraEntradaFragment();
+                CadastraSaidaFragment cadastra = new CadastraSaidaFragment();
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.fragment_content, cadastra);
@@ -64,24 +66,24 @@ public class EntradaFragment extends Fragment{
 
         FabricaConexao fabrica = new FabricaConexao(getContext());
         db = fabrica.getWritableDatabase();
-        EntradaDao entradaDao = new EntradaDao(db);
-        List<Entrada> list = entradaDao.listAll();
-        //ArrayAdapter<Entrada> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, list);
-        MeuAdapter meuAdapter = new MeuAdapter(list,getActivity());
-        ListView lvImprimeEntradas = (ListView) view.findViewById(R.id.lvImprimeEntradas);
-        lvImprimeEntradas.setAdapter(meuAdapter);
+        SaidaDao saidaDao = new SaidaDao(db);
+        List<Saida> list = saidaDao.listAll();
+        //ArrayAdapter<Saida> arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, list);
+        SaidaAdapter saidaAdapter = new SaidaAdapter(list,getActivity());
+        ListView lvImprimeSaidas = (ListView) view.findViewById(R.id.lvImprimeSaidas);
+        lvImprimeSaidas.setAdapter(saidaAdapter);
 
-        lvImprimeEntradas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvImprimeSaidas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Entrada selecionado = (Entrada) parent.getItemAtPosition(position);
+                Saida selecionado = (Saida) parent.getItemAtPosition(position);
                 trataSelecionado(selecionado);
             }
         });
 
     }
 
-    private void trataSelecionado(final Entrada selecionado) {
+    private void trataSelecionado(final Saida selecionado) {
         AlertDialog.Builder dialogo = new AlertDialog.Builder(getActivity());
         dialogo.setTitle("Editar / Apagar?");
         dialogo.setMessage(selecionado.toString());
@@ -95,10 +97,10 @@ public class EntradaFragment extends Fragment{
                 bundle.putString("descricao", selecionado.getDescricao());
                 bundle.putString("valor", selecionado.getValor());
 
-                EditaEntradaFragment edita = new EditaEntradaFragment();
+                EditaSaidaFragment edita = new EditaSaidaFragment();
                 edita.setArguments(bundle);
-                android.support.v4.app.FragmentManager fm = getFragmentManager();
-                android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.fragment_content, edita);
                 ft.commit();
             }
@@ -120,8 +122,8 @@ public class EntradaFragment extends Fragment{
                         Integer id = selecionado.getId();
                         FabricaConexao fabrica = new FabricaConexao(getContext());
                         db = fabrica.getWritableDatabase();
-                        EntradaDao entradaDao = new EntradaDao(db);
-                        entradaDao.delete(id);
+                        SaidaDao saidaDao = new SaidaDao(db);
+                        saidaDao.delete(id);
                         try {
                             imprime(view);
                         } catch (ParseException e) {
