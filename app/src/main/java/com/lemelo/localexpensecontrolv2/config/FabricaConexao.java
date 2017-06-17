@@ -10,19 +10,22 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class FabricaConexao extends SQLiteOpenHelper{
     public FabricaConexao(Context context) {
-        super(context, "banco.db", null, 1);
+        super(context, "banco.db", null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table entrada (id integer primary key autoincrement, data date, descricao text, valor decimal(18,2))");
-        db.execSQL("create table saida (id integer primary key autoincrement, data date, descricao text, valor decimal(18,2))");
+        db.execSQL("create table if not exists entrada (id integer primary key autoincrement, data date, descricao text, valor decimal(18,2))");
+        db.execSQL("create table if not exists saida (id integer primary key autoincrement, data date, descricao text, valor decimal(18,2))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table entrada");
-        db.execSQL("drop table saida");
+        System.out.println("Passei no onUpgrade! ");
+        System.out.println("oldVersion: " + oldVersion);
+        System.out.println("newVersion: " + newVersion);
+        //db.execSQL("drop table entrada");
+        //db.execSQL("drop table saida");
         onCreate(db);
     }
 }
